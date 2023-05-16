@@ -11,4 +11,18 @@
 #    
 server:
   port: 8020
+#spring:
+#  config:
+#    import: configserver:http://localhost:8064
+eureka:
+  client:
+     register-with-eureka: true
+     fetch-registry: true
+     service-url:
+       defaultZone: http://localhost:8761/eureka/
+     instance:
+       hostname: localhost
     
+spring:
+  application:
+    name: JOB SERVICE

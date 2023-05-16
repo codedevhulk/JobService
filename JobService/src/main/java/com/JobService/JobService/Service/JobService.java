@@ -1,14 +1,18 @@
-package com.JobService.JobService.Service;
+	package com.JobService.JobService.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.JobService.JobService.Entity.JobDetails;
+import com.JobService.JobService.Model.JobApplicationRequest;
 import com.JobService.JobService.Model.JobDetailsRequest;
+import com.JobService.JobService.Model.JobDetailsResponse;
 import com.JobService.JobService.Repository.JobDetailsRepo;
+import com.JobService.JobService.ResponseTemplateVO.JobSeekerDetails;
 
 @Service
 public class JobService {
@@ -16,6 +20,9 @@ public class JobService {
 	
 	@Autowired
 	JobDetailsRepo jobDetailsRepo;
+	
+	@Autowired
+	RestTemplate restTemplate;
 	
 	
 	public void jobPost(JobDetailsRequest jobDetailsRequest) {
@@ -106,6 +113,27 @@ public class JobService {
 		
 		
 	}
+
+
+	public void apply(JobApplicationRequest jobApplicationRequest) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		JobSeekerDetails jobSeekerDetails=restTemplate.getForObject(, null)
+		
+		
+		
+	}
+
+
+	public JobDetails getJobById(int id) {
+		// TODO Auto-generated method stub
+		return jobDetailsRepo.findById(id).get();
+	}
+
+
+
 
 	
 	
