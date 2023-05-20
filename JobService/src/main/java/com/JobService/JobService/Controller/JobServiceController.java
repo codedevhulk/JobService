@@ -19,6 +19,7 @@ import com.JobService.JobService.Entity.JobDetails;
 import com.JobService.JobService.Model.JobApplicationRequest;
 import com.JobService.JobService.Model.JobDetailsRequest;
 import com.JobService.JobService.Model.JobDetailsResponse;
+import com.JobService.JobService.ResponseTemplateVO.JobApplication;
 import com.JobService.JobService.Service.JobService;
 
 @RestController
@@ -55,6 +56,7 @@ public class JobServiceController {
 		
 		
 		JobDetails jobDetails=jobService.getJobById(id);
+		return new ResponseEntity<>(jobDetails,HttpStatus.OK);
 		
 	}
 	
@@ -98,10 +100,55 @@ public class JobServiceController {
 
 	// Apply for a job
 	@PostMapping("/jobseeker/apply/")
-	public ResponseEntity<String> apply(@RequestBody JobApplicationRequest jobApplicationRequest){
-		jobService.apply(jobApplicationRequest);
+	public ResponseEntity<JobApplication> apply(@RequestBody JobApplicationRequest jobApplicationRequest){
+		JobApplication jobApplication=jobService.apply(jobApplicationRequest);
 		
-		return new ResponseEntity<>("You have succesfully applied for the Job",HttpStatus.OK);
+		return new ResponseEntity<>(jobApplication,HttpStatus.OK);
+	}
+	
+	
+	
+	// To Get all the applications of all the applicants for all the jobs
+	
+	@GetMapping("/applications")
+	public List<JobApplication> getAllApplications(){
+		return jobService.getAllApplications();
+	}
+	
+	
+	
+	// To get all the applications who applied for the jobs posted a recruiter
+	@GetMapping("/recruiter/applications/{id}")
+	public List<JobApplication> getJobApplicationsPostedByRecruiter(@PathVariable int id){
+		return jobService.getJobApplicationsByRecruiter(id);
+	}
+	
+	
+	
+	
+	// To get the past applications of a Jobseeker
+	
+	@GetMapping("/jobseeker/applications/{id}")
+	public List<JobApplication> getJobApplicationsOfJobSeeker(@PathVariable int id){
+		return jobService.getJobApplicationsOfJobSeeker(id);
+	}
+	
+	
+	// To Accept the application 
+	
+	@PutMapping("/recruiter/application/accept/{id}")
+	public ResponseEntity<String> acceptApplicationByApplicationId(@PathVariable int id){
+	jobService.acceptApplicationByApplicationId(id);
+	return new ResponseEntity<>("Job application has been accepted for Application ID: "+id,HttpStatus.OK);
+	}
+	
+	
+	// To Reject the application
+	
+	@PutMapping("/recruiter/application/reject/{id}")
+	public ResponseEntity<String> rejectApplicationByApplicationId(@PathVariable int id){
+	jobService.rejectApplicationByApplicationId(id);
+	return new ResponseEntity<>("Job application has been rejected for Application ID: "+id,HttpStatus.OK);
 	}
 	
 

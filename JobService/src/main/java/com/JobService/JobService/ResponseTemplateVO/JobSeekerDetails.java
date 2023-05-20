@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class JobSeekerDetails {
 	
+	
+	long jobSeekerId;
 	String firstName;
 	String lastName;
 	String mobileNumber;

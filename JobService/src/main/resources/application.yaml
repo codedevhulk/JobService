@@ -23,6 +23,6 @@ eureka:
      instance:
        hostname: localhost
     
-spring:
-  application:
-    name: JOB SERVICE
+#spring:
+#  application:
+#    name: JOB SERVICE

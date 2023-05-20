@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobDetailsRequest {
 
-	
+	int recruiterId;
 	String jobTitle;
 	String jobDescription;
 	String location;
@@ -22,6 +22,9 @@ public class JobDetailsRequest {
 	String qualification;
 	String skillSet;
     int vacancies;
+    String companyName;
+   
+    
     
 	
 	

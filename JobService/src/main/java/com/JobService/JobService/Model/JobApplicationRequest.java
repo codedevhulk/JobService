@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobApplicationRequest {
 
-	int jobSeekerId;
+	long jobSeekerId;
 	int jobId;
 	
 	
