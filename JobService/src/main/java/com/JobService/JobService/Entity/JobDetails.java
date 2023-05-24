@@ -30,7 +30,7 @@ public class JobDetails {
 	String qualification;
 	String skillSet;
     int vacancies;
-    int recruiterId;
+    long recruiterId;
     String companyName;
 	
 	

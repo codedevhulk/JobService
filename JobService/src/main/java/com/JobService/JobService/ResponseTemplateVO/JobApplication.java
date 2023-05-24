@@ -35,7 +35,7 @@ public class JobApplication {
 	String jobSeekerSummary;
 	String jobSeekerAddress;
 	int jobId;
-	int recruiterId;
+	long recruiterId;
 	String jobTitle;
 	String jobDescription;
 	String location;

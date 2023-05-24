@@ -12,7 +12,7 @@ public interface JobApplicationRepo extends JpaRepository<JobApplication,Integer
 
 	
 	
-	List<JobApplication> findByRecruiterId(int id);
+	List<JobApplication> findByRecruiterId(long id);
 	List<JobApplication> findByJobSeekerId(long id);
 	
 }

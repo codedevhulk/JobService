@@ -119,7 +119,7 @@ public class JobServiceController {
 	
 	// To get all the applications who applied for the jobs posted a recruiter
 	@GetMapping("/recruiter/applications/{id}")
-	public List<JobApplication> getJobApplicationsPostedByRecruiter(@PathVariable int id){
+	public List<JobApplication> getJobApplicationsPostedByRecruiter(@PathVariable long id){
 		return jobService.getJobApplicationsByRecruiter(id);
 	}
 	

@@ -3,6 +3,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.JobService.JobService.Entity.JobDetails;
+import com.JobService.JobService.Exception.CustomException;
 import com.JobService.JobService.Model.JobApplicationRequest;
 import com.JobService.JobService.Model.JobDetailsRequest;
 import com.JobService.JobService.Model.JobDetailsResponse;
@@ -152,7 +154,16 @@ public class JobService {
 		JobDetails jobDetails= jobDetailsRepo.findById(jobApplicationRequest.getJobId()).get();
 	
 		
-		
+//		if(Objects.isNull(jobSeekerDetails)) {
+//			throw new CustomException("Job seeker doesn't found with ID "+jobApplicationRequest.getJobSeekerId()+"not found","NOT_FOUND",404);
+//		}
+//		
+//		if(Objects.isNull(jobDetails)) {
+//			
+//			throw new CustomException("Job details not found with ID "+jobApplicationRequest.getJobId()+"not found","NOT_FOUND",404);
+//			
+//			
+//		}
 		
 //		
 //		JobApplication jobApplication=JobApplication.builder()
@@ -198,26 +209,59 @@ public class JobService {
 
 
 	public JobDetails getJobById(int id) {
-		// TODO Auto-generated method stub
-		return jobDetailsRepo.findById(id).get();
-	}
+		
+		
+		
+		
+		
+		
+		return jobDetailsRepo.findById(id).orElseThrow(()->new CustomException("Job details with ID: "+id+" Not found","NOT_FOUND",404));
 
-//
+		
+		
+		//System.out.println(jobDetailsById.toString());
+		// TODO Auto-generated method stub
+//	if(Objects.isNull(jobDetailsById)) {
+//			
+//		
+//		throw new CustomException("Job details with ID: "+id+" Not found","NOT_FOUND",404);}
+//		else {
+//			return jobDetailsById;
+//		}
+		}
+
+
 	public List<JobApplication> getAllApplications() {
 		// TODO Auto-generated method stub
 		return jobApplicationRepo.findAll();
 	}
 
 
-	public List<JobApplication> getJobApplicationsByRecruiter(int id) {
+	public List<JobApplication> getJobApplicationsByRecruiter(long id) {
 		// TODO Auto-generated method stub
-		return jobApplicationRepo.findByRecruiterId(id);
+		List<JobApplication> jobApplications=jobApplicationRepo.findByRecruiterId(id);
+		if(jobApplications.isEmpty()) {
+			throw new CustomException("Recruiter with ID: "+id+" not found","NOT_FOUND",404);
+		}
+		else {
+			return jobApplications;
+		}
+		
 	}
 
 
 	public List<JobApplication> getJobApplicationsOfJobSeeker(int id) {
 		// TODO Auto-generated method stub
-		return jobApplicationRepo.findByJobSeekerId(id);
+		
+		
+		
+		List<JobApplication> jobApplicationsOfJobSeeker=jobApplicationRepo.findByJobSeekerId(id);
+		if(jobApplicationsOfJobSeeker.isEmpty()) {
+			throw new CustomException("Job seeker with ID: "+id+" not found","NOT_FOUND",404);
+		}
+		else {
+			return jobApplicationsOfJobSeeker;
+		}
 	}
 
 
