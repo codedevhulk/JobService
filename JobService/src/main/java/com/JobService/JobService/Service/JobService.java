@@ -21,10 +21,14 @@ import com.JobService.JobService.Repository.JobApplicationRepo;
 import com.JobService.JobService.Repository.JobDetailsRepo;
 import com.JobService.JobService.ResponseTemplateVO.JobApplication;
 import com.JobService.JobService.ResponseTemplateVO.JobSeekerDetails;
+//<<<<<<< HEAD
 import com.JobService.JobService.external.JobseekerService;
 import com.JobService.JobService.external.RecruiterDetails;
 import com.JobService.JobService.external.RecruiterService;
 import com.google.common.net.HttpHeaders;
+//=======
+import com.JobService.JobService.emailsender.EmailSender;
+//>>>>>>> b226de438bdebd1c827c4282c87d0f1acc635cea
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,10 +38,15 @@ public class JobService {
 
 	
 	@Autowired
+    EmailSender emailSender;
+	
+	@Autowired
 	JobDetailsRepo jobDetailsRepo;
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
+	
 	
 	@Autowired
 	JobseekerService jobSeekerService;
@@ -90,9 +99,6 @@ public class JobService {
 				.recruiterId(jobDetailsRequest.getRecruiterId())
 				.companyName(jobDetailsRequest.getCompanyName())
 				.build();
-		
-		
-		
 		
 		
 		
@@ -315,6 +321,10 @@ public class JobService {
 		jobApplication.setApplicationStatus("Accepted");
 		jobApplicationRepo.save(jobApplication);
 		
+//<<<<<<< HEAD
+//=======
+		emailSender.sendAcceptedMail(jobApplication.getEmail());
+//>>>>>>> b226de438bdebd1c827c4282c87d0f1acc635cea
 	}
 
 
