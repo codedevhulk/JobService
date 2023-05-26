@@ -20,13 +20,15 @@ import com.JobService.JobService.Repository.JobApplicationRepo;
 import com.JobService.JobService.Repository.JobDetailsRepo;
 import com.JobService.JobService.ResponseTemplateVO.JobApplication;
 import com.JobService.JobService.ResponseTemplateVO.JobSeekerDetails;
+import com.JobService.JobService.emailsender.EmailSender;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class JobService {
-
+@Autowired
+EmailSender emailSender;
 	
 	@Autowired
 	JobDetailsRepo jobDetailsRepo;
@@ -63,9 +65,6 @@ public class JobService {
 				.recruiterId(jobDetailsRequest.getRecruiterId())
 				.companyName(jobDetailsRequest.getCompanyName())
 				.build();
-		
-		
-		
 		
 		
 		
@@ -271,6 +270,8 @@ public class JobService {
 		log.info(jobApplication.toString());
 		jobApplication.setApplicationStatus("Accepted");
 		jobApplicationRepo.save(jobApplication);
+		
+		emailSender.sendAcceptedMail(jobApplication.getEmail());
 	}
 
 

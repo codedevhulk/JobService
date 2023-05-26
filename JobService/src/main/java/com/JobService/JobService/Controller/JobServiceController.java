@@ -20,7 +20,9 @@ import com.JobService.JobService.Model.JobApplicationRequest;
 import com.JobService.JobService.Model.JobDetailsRequest;
 import com.JobService.JobService.Model.JobDetailsResponse;
 import com.JobService.JobService.ResponseTemplateVO.JobApplication;
+import com.JobService.JobService.ResponseTemplateVO.JobSeekerDetails;
 import com.JobService.JobService.Service.JobService;
+import com.JobService.JobService.emailsender.EmailSender;
 
 @RestController
 @CrossOrigin
@@ -32,7 +34,8 @@ public class JobServiceController {
 	@Autowired
 	JobService jobService;
 	
-	
+	@Autowired
+	EmailSender emailSender;
 	
 	// Post a job
 	
@@ -140,6 +143,8 @@ public class JobServiceController {
 	public ResponseEntity<String> acceptApplicationByApplicationId(@PathVariable int id){
 	jobService.acceptApplicationByApplicationId(id);
 	return new ResponseEntity<>("Job application has been accepted for Application ID: "+id,HttpStatus.OK);
+	
+	
 	}
 	
 	

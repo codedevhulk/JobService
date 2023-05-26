@@ -11,6 +11,7 @@ public class JobApplicationRequest {
 
 	long jobSeekerId;
 	int jobId;
+
 	
 	
 	
