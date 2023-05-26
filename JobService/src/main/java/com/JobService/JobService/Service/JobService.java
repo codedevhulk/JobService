@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.JobService.JobService.Entity.JobDetails;
@@ -20,6 +21,10 @@ import com.JobService.JobService.Repository.JobApplicationRepo;
 import com.JobService.JobService.Repository.JobDetailsRepo;
 import com.JobService.JobService.ResponseTemplateVO.JobApplication;
 import com.JobService.JobService.ResponseTemplateVO.JobSeekerDetails;
+import com.JobService.JobService.external.JobseekerService;
+import com.JobService.JobService.external.RecruiterDetails;
+import com.JobService.JobService.external.RecruiterService;
+import com.google.common.net.HttpHeaders;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +39,12 @@ public class JobService {
 	@Autowired
 	RestTemplate restTemplate;
 	
+	@Autowired
+	JobseekerService jobSeekerService;
 	
+	
+	@Autowired
+	RecruiterService recruiterService;
 	@Autowired
 	JobApplicationRepo jobApplicationRepo;
 	
@@ -49,6 +59,23 @@ public class JobService {
 	
 	public void jobPost(JobDetailsRequest jobDetailsRequest) {
 		// TODO Auto-generated method stub
+		
+		
+		
+		
+		if(Objects.isNull(jobDetailsRequest.getRecruiterId())) {
+			throw new CustomException("Recruiter ID is mandatory to post a job, please provide the recruiter ID","BAD_REQUEST",400);
+		}
+		
+		
+		RecruiterDetails recruiterDetails=recruiterService.getRecruiterById(jobDetailsRequest.getRecruiterId());
+		
+			
+			
+			
+			
+		
+		
 		
 		JobDetails jobDetails=JobDetails.builder()
 				.jobTitle(jobDetailsRequest.getJobTitle())
@@ -150,8 +177,16 @@ public class JobService {
 		
 		
 		
-		JobSeekerDetails jobSeekerDetails=restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
-		JobDetails jobDetails= jobDetailsRepo.findById(jobApplicationRequest.getJobId()).get();
+		
+		
+		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails=jobSeekerService.getJobSeekerById(jobApplicationRequest.getJobSeekerId());
+		
+	
+		//restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
+		
+		
+		
+		JobDetails jobDetails= jobDetailsRepo.findById(jobApplicationRequest.getJobId()).orElseThrow(()->new CustomException("Job details with ID "+jobApplicationRequest.getJobId()+" Not found","NOT_FOUND",404));
 	
 		
 //		if(Objects.isNull(jobSeekerDetails)) {
@@ -199,6 +234,11 @@ public class JobService {
 		
 		jobApplicationRepo.save(jobApplication);
 		
+		
+		
+	
+		
+	
 		
 		return jobApplication;
 		
@@ -255,9 +295,12 @@ public class JobService {
 		
 		
 		
+		
+		
+		
 		List<JobApplication> jobApplicationsOfJobSeeker=jobApplicationRepo.findByJobSeekerId(id);
 		if(jobApplicationsOfJobSeeker.isEmpty()) {
-			throw new CustomException("Job seeker with ID: "+id+" not found","NOT_FOUND",404);
+			throw new CustomException("No Applications found for "+id+"","NOT_FOUND",404);
 		}
 		else {
 			return jobApplicationsOfJobSeeker;
@@ -271,6 +314,7 @@ public class JobService {
 		log.info(jobApplication.toString());
 		jobApplication.setApplicationStatus("Accepted");
 		jobApplicationRepo.save(jobApplication);
+		
 	}
 
 
