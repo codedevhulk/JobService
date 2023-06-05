@@ -37,6 +37,8 @@ public class JobServiceController {
 	@Autowired
 	EmailSender emailSender;
 	
+	
+	
 	// Post a job
 	
 	@PostMapping("/recruiter/jobpost")

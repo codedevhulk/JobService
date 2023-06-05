@@ -54,6 +54,7 @@ public class JobService {
 	
 	@Autowired
 	RecruiterService recruiterService;
+	
 	@Autowired
 	JobApplicationRepo jobApplicationRepo;
 	
@@ -72,15 +73,18 @@ public class JobService {
 		
 		
 		
-		if(Objects.isNull(jobDetailsRequest.getRecruiterId())) {
-			throw new CustomException("Recruiter ID is mandatory to post a job, please provide the recruiter ID","BAD_REQUEST",400);
-		}
+//		if(Objects.isNull(jobDetailsRequest.getRecruiterId())) {
+//			throw new CustomException("Recruiter ID is mandatory to post a job, please provide the recruiter ID","BAD_REQUEST",400);
+//		}
 		
+		RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobDetailsRequest.getRecruiterId(), RecruiterDetails.class);
+		//recruiterService.getRecruiterById(jobDetailsRequest.getRecruiterId());
 		
-		RecruiterDetails recruiterDetails=recruiterService.getRecruiterById(jobDetailsRequest.getRecruiterId());
-		
-			
-			
+//			
+//			if(Objects.isNull(recruiterDetails.getEmail())) {
+//				throw new CustomException("Email details not updated for recruiter "+recruiterDetails.getUserName()+" ,Please update the email to proceed for posting a job","EMAIL_DOESN'T EXIST",404);
+//				
+//			}
 			
 			
 		
@@ -184,16 +188,32 @@ public class JobService {
 		
 		
 		
-		
-		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails=jobSeekerService.getJobSeekerById(jobApplicationRequest.getJobSeekerId());
-		
+//		
+//		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails=jobSeekerService.getJobSeekerById(jobApplicationRequest.getJobSeekerId());
+//		if(Objects.isNull(jobSeekerDetails)) {
+//			
+//			throw new CustomException("Job seeker details not found","NOT_FOUND",404);
+//			
+//		}
 	
-		//restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
+		JobSeekerDetails jobSeekerDetails=restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
 		
 		
 		
 		JobDetails jobDetails= jobDetailsRepo.findById(jobApplicationRequest.getJobId()).orElseThrow(()->new CustomException("Job details with ID "+jobApplicationRequest.getJobId()+" Not found","NOT_FOUND",404));
 	
+		
+//		
+//	RecruiterDetails recruiterDetails=	recruiterService.getRecruiterById(jobDetails.getRecruiterId());
+//		if(Objects.isNull(recruiterDetails.getEmail())) {
+//			
+//			throw new CustomException("Recruiter email does not exist, please update the recruiter profile","RECRUITER_EMAIL_NOT_FOUND",404);
+//			
+//		}
+		
+		RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobDetails.getRecruiterId(), RecruiterDetails.class);
+		
+		
 		
 //		if(Objects.isNull(jobSeekerDetails)) {
 //			throw new CustomException("Job seeker doesn't found with ID "+jobApplicationRequest.getJobSeekerId()+"not found","NOT_FOUND",404);
@@ -242,7 +262,7 @@ public class JobService {
 		
 		
 		
-	
+	emailSender.sendApplicationNotificationToRecruiter(recruiterDetails.getEmail(),jobApplication.getFirstName(),jobApplication.getJobTitle(),recruiterDetails.getUserName());
 		
 	
 		
@@ -285,9 +305,14 @@ public class JobService {
 
 	public List<JobApplication> getJobApplicationsByRecruiter(long id) {
 		// TODO Auto-generated method stub
+		
+		RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+id, RecruiterDetails.class);
 		List<JobApplication> jobApplications=jobApplicationRepo.findByRecruiterId(id);
-		if(jobApplications.isEmpty()) {
+		if(Objects.isNull(recruiterDetails)) {
 			throw new CustomException("Recruiter with ID: "+id+" not found","NOT_FOUND",404);
+		}
+		else if(jobApplications.isEmpty()) {
+			throw new CustomException("Job applications for recruiter: "+id+" not found","NOT_FOUND",404);
 		}
 		else {
 			return jobApplications;
@@ -320,10 +345,10 @@ public class JobService {
 		log.info(jobApplication.toString());
 		jobApplication.setApplicationStatus("Accepted");
 		jobApplicationRepo.save(jobApplication);
-		
+		RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobApplication.getRecruiterId(), RecruiterDetails.class);
 //<<<<<<< HEAD
 //=======
-		emailSender.sendAcceptedMail(jobApplication.getEmail());
+		emailSender.sendAcceptedMail(jobApplication.getEmail(),jobApplication.getFirstName(),recruiterDetails.getUserName(),jobApplication.getJobTitle());
 //>>>>>>> b226de438bdebd1c827c4282c87d0f1acc635cea
 	}
 
@@ -331,9 +356,10 @@ public class JobService {
 	public void rejectApplicationByApplicationId(int id) {
 		// TODO Auto-generated method stub
 JobApplication jobApplication=jobApplicationRepo.findById(id).get();
-		
+RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobApplication.getRecruiterId(), RecruiterDetails.class);
 		jobApplication.setApplicationStatus("Rejected");
 		jobApplicationRepo.save(jobApplication);
+		emailSender.sendRejectedMail(jobApplication.getEmail(),jobApplication.getFirstName(),recruiterDetails.getUserName(),jobApplication.getJobTitle());
 	}
 
 
