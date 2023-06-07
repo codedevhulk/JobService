@@ -24,6 +24,7 @@ import com.JobService.JobService.ResponseTemplateVO.JobSeekerDetails;
 import com.JobService.JobService.Service.JobService;
 import com.JobService.JobService.emailsender.EmailSender;
 import com.JobService.JobService.response.ApplicationStatus;
+import com.JobService.JobService.response.JobPostResponse;
 
 @RestController
 @CrossOrigin
@@ -43,12 +44,16 @@ public class JobServiceController {
 	// Post a job
 	
 	@PostMapping("/recruiter/jobpost")
-	public ResponseEntity<String> jobPost(@RequestBody JobDetailsRequest jobDetailsRequest){
+	public ResponseEntity<JobPostResponse> jobPost(@RequestBody JobDetailsRequest jobDetailsRequest){
 		
-		jobService.jobPost(jobDetailsRequest);
+		int jobId=jobService.jobPost(jobDetailsRequest);
 		
+		JobPostResponse jobPostResponse=new JobPostResponse();
 		
-		return new ResponseEntity<>("Job has been posted succesfully",HttpStatus.OK);
+		jobPostResponse.setJobId(jobId);
+		jobPostResponse.setJobPostResponse("Job has been posted succesfully");
+		
+		return new ResponseEntity<>(jobPostResponse,HttpStatus.OK);
 	}
 	
 	
@@ -156,12 +161,12 @@ public class JobServiceController {
 	// To Reject the application
 	
 	@PutMapping("/recruiter/application/reject/{id}")
-	public ApplicationStatus rejectApplicationByApplicationId(@PathVariable int id){
+	public ResponseEntity<ApplicationStatus> rejectApplicationByApplicationId(@PathVariable int id){
 	jobService.rejectApplicationByApplicationId(id);
 	
 	ApplicationStatus status=new ApplicationStatus();
 	status.setMessage("Job application has been rejected for Application ID: "+id);
-	return status;
+	return new ResponseEntity<>(status,HttpStatus.OK);
 	}
 	
 

@@ -67,7 +67,7 @@ public class JobService {
 	
 	
 	
-	public void jobPost(JobDetailsRequest jobDetailsRequest) {
+	public int jobPost(JobDetailsRequest jobDetailsRequest) {
 		// TODO Auto-generated method stub
 		
 		
@@ -110,7 +110,7 @@ public class JobService {
 		jobDetailsRepo.save(jobDetails);
 		
 				
-		
+		return jobDetails.getId();
 		
 		
 	}
