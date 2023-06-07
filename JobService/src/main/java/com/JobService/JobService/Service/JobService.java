@@ -134,7 +134,7 @@ public class JobService {
 		}
         if(Objects.nonNull(updatedJobDetailsRequest.getJobDescription())) {
 			
-			existingJobDetails.setExperience(updatedJobDetailsRequest.getJobDescription());
+			existingJobDetails.setJobDescription(updatedJobDetailsRequest.getJobDescription());
 		}
         if(Objects.nonNull(updatedJobDetailsRequest.getJobTitle())) {
 	
@@ -164,6 +164,9 @@ public class JobService {
         		
          	existingJobDetails.setVacancies(updatedJobDetailsRequest.getVacancies());
             }
+         if(Objects.nonNull(updatedJobDetailsRequest.getCompanyName())) {
+        	 existingJobDetails.setCompanyName(updatedJobDetailsRequest.getCompanyName());
+         }
          
          
          jobDetailsRepo.save(existingJobDetails);
