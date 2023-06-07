@@ -23,6 +23,7 @@ import com.JobService.JobService.ResponseTemplateVO.JobApplication;
 import com.JobService.JobService.ResponseTemplateVO.JobSeekerDetails;
 import com.JobService.JobService.Service.JobService;
 import com.JobService.JobService.emailsender.EmailSender;
+import com.JobService.JobService.response.ApplicationStatus;
 
 @RestController
 @CrossOrigin
@@ -142,9 +143,11 @@ public class JobServiceController {
 	// To Accept the application 
 	
 	@PutMapping("/recruiter/application/accept/{id}")
-	public ResponseEntity<String> acceptApplicationByApplicationId(@PathVariable int id){
+	public ApplicationStatus acceptApplicationByApplicationId(@PathVariable int id){
 	jobService.acceptApplicationByApplicationId(id);
-	return new ResponseEntity<>("Job application has been accepted for Application ID: "+id,HttpStatus.OK);
+	ApplicationStatus status=new ApplicationStatus();
+	status.setMessage("Job application has been Accepted for Application ID: "+id);
+	return status;
 	
 	
 	}
@@ -153,9 +156,12 @@ public class JobServiceController {
 	// To Reject the application
 	
 	@PutMapping("/recruiter/application/reject/{id}")
-	public ResponseEntity<String> rejectApplicationByApplicationId(@PathVariable int id){
+	public ApplicationStatus rejectApplicationByApplicationId(@PathVariable int id){
 	jobService.rejectApplicationByApplicationId(id);
-	return new ResponseEntity<>("Job application has been rejected for Application ID: "+id,HttpStatus.OK);
+	
+	ApplicationStatus status=new ApplicationStatus();
+	status.setMessage("Job application has been rejected for Application ID: "+id);
+	return status;
 	}
 	
 
