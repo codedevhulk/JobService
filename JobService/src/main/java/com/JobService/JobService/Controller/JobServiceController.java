@@ -158,6 +158,19 @@ public class JobServiceController {
 	}
 	
 	
+	// To delete the application by application id
+	
+	@DeleteMapping("/deleteapplication/{id}")
+	public ApplicationStatus deleteApplicationById(@PathVariable int id) {
+		
+		jobService.deleteApplicationById(id);
+		ApplicationStatus status=new ApplicationStatus();
+		status.setMessage("Job application has been removed for Application ID: "+id);
+		return status;
+	
+	}
+	
+	
 	// To Reject the application
 	
 	@PutMapping("/recruiter/application/reject/{id}")

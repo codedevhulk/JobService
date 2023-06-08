@@ -179,6 +179,7 @@ public class JobService {
 
 	public void deleteJobPost(int id) {
 		// TODO Auto-generated method stub
+		JobDetails jobDetails=jobDetailsRepo.findById(id).orElseThrow(()->new CustomException("Job details with ID: "+id+" Not found","NOT_FOUND",404));
 		jobDetailsRepo.deleteById(id);
 		
 		
@@ -366,6 +367,21 @@ RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSER
 	}
 
 
+	public void deleteApplicationById(int id) {
+		// TODO Auto-generated method stub
+		
+		
+		JobApplication jobApplication=jobApplicationRepo.findById(id).orElseThrow(()->new CustomException("Job application with ID: "+id+" Not found","NOT_FOUND",404));
+		
+		
+		
+			
+		
+		jobApplicationRepo.deleteById(id);}
+		
+	}
+
+
 
 
 	
@@ -374,4 +390,4 @@ RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSER
 	
 	
 	
-}
+
