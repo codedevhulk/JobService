@@ -125,8 +125,14 @@ public class JobService {
 	public void updateJobPost(int id, JobDetailsRequest updatedJobDetailsRequest) {
 		// TODO Auto-generated method stub
 		
+		
+		
+		
+		
 		JobDetails existingJobDetails=jobDetailsRepo.findById(id).get();
 		
+		
+		System.out.println(existingJobDetails.toString());
 		
 		if(Objects.nonNull(updatedJobDetailsRequest.getExperience())) {
 			
@@ -170,6 +176,7 @@ public class JobService {
          
          
          jobDetailsRepo.save(existingJobDetails);
+         
          
 
 		
