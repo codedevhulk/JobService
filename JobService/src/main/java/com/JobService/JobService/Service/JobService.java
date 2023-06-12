@@ -77,10 +77,12 @@ public class JobService {
 //			throw new CustomException("Recruiter ID is mandatory to post a job, please provide the recruiter ID","BAD_REQUEST",400);
 //		}
 		
-		RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobDetailsRequest.getRecruiterId(), RecruiterDetails.class);
+		//RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobDetailsRequest.getRecruiterId(), RecruiterDetails.class);
 		//recruiterService.getRecruiterById(jobDetailsRequest.getRecruiterId());
 		
-//			
+		
+		RecruiterDetails recruiterDetails=recruiterService.getRecruiterById(jobDetailsRequest.getRecruiterId());
+			//System.out.println(recruiterDetailss.toString());
 //			if(Objects.isNull(recruiterDetails.getEmail())) {
 //				throw new CustomException("Email details not updated for recruiter "+recruiterDetails.getUserName()+" ,Please update the email to proceed for posting a job","EMAIL_DOESN'T EXIST",404);
 //				
@@ -118,7 +120,11 @@ public class JobService {
 
 	public List<JobDetails> allJobs() {
 		// TODO Auto-generated method stub
-		return jobDetailsRepo.findAll();
+		List<JobDetails> jobDetails=jobDetailsRepo.findAll();
+		if(jobDetails.isEmpty()) {
+			throw new CustomException("No Job details found","NOT_FOUND",404);
+		}
+		return jobDetails;
 	}
 
 
@@ -129,7 +135,9 @@ public class JobService {
 		
 		
 		
-		JobDetails existingJobDetails=jobDetailsRepo.findById(id).get();
+		JobDetails existingJobDetails=jobDetailsRepo.findById(id).orElseThrow(()->new CustomException("Job details not found with ID: "+id,"NOT_FOUND",404));
+		
+	
 		
 		
 		System.out.println(existingJobDetails.toString());
@@ -207,9 +215,9 @@ public class JobService {
 //			
 //		}
 	
-		JobSeekerDetails jobSeekerDetails=restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
+		//JobSeekerDetails jobSeekerDetails=restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
 		
-		
+		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails=jobSeekerService.getJobSeekerById(jobApplicationRequest.getJobSeekerId());
 		
 		JobDetails jobDetails= jobDetailsRepo.findById(jobApplicationRequest.getJobId()).orElseThrow(()->new CustomException("Job details with ID "+jobApplicationRequest.getJobId()+" Not found","NOT_FOUND",404));
 	
@@ -222,9 +230,9 @@ public class JobService {
 //			
 //		}
 		
-		RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobDetails.getRecruiterId(), RecruiterDetails.class);
+		//RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobDetails.getRecruiterId(), RecruiterDetails.class);
 		
-		
+		RecruiterDetails recruiterDetails=recruiterService.getRecruiterById(jobDetails.getRecruiterId());
 		
 //		if(Objects.isNull(jobSeekerDetails)) {
 //			throw new CustomException("Job seeker doesn't found with ID "+jobApplicationRequest.getJobSeekerId()+"not found","NOT_FOUND",404);
@@ -310,14 +318,19 @@ public class JobService {
 
 	public List<JobApplication> getAllApplications() {
 		// TODO Auto-generated method stub
-		return jobApplicationRepo.findAll();
+		
+		List<JobApplication> jobApplications=jobApplicationRepo.findAll();
+		if(jobApplications.isEmpty()) {
+			throw new CustomException("Job Applications not found","NOT_FOUND",404);
+		}
+		return jobApplications;
 	}
 
 
 	public List<JobApplication> getJobApplicationsByRecruiter(long id) {
 		// TODO Auto-generated method stub
-		
-		RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+id, RecruiterDetails.class);
+		RecruiterDetails recruiterDetails=recruiterService.getRecruiterById(id);
+		//RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+id, RecruiterDetails.class);
 		List<JobApplication> jobApplications=jobApplicationRepo.findByRecruiterId(id);
 		if(Objects.isNull(recruiterDetails)) {
 			throw new CustomException("Recruiter with ID: "+id+" not found","NOT_FOUND",404);
@@ -337,7 +350,7 @@ public class JobService {
 		
 		
 		
-		
+		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails=jobSeekerService.getJobSeekerById(id);
 		
 		
 		List<JobApplication> jobApplicationsOfJobSeeker=jobApplicationRepo.findByJobSeekerId(id);
@@ -352,7 +365,7 @@ public class JobService {
 
 	public void acceptApplicationByApplicationId(int id) {
 		// TODO Auto-generated method stub
-		JobApplication jobApplication=jobApplicationRepo.findById(id).get();
+		JobApplication jobApplication=jobApplicationRepo.findById(id).orElseThrow(()->new CustomException("Job Application not found with ID: "+id,"NOT_FOUND",404));
 		log.info(jobApplication.toString());
 		jobApplication.setApplicationStatus("Accepted");
 		jobApplicationRepo.save(jobApplication);
@@ -366,7 +379,7 @@ public class JobService {
 
 	public void rejectApplicationByApplicationId(int id) {
 		// TODO Auto-generated method stub
-JobApplication jobApplication=jobApplicationRepo.findById(id).get();
+		JobApplication jobApplication=jobApplicationRepo.findById(id).orElseThrow(()->new CustomException("Job Application not found with ID: "+id,"NOT_FOUND",404));
 RecruiterDetails recruiterDetails=restTemplate.getForObject("http://RECRUITERSERVICE/recruiter/getbyid/"+jobApplication.getRecruiterId(), RecruiterDetails.class);
 		jobApplication.setApplicationStatus("Rejected");
 		jobApplicationRepo.save(jobApplication);

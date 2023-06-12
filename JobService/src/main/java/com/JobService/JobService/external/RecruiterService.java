@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface RecruiterService {
 
 	@GetMapping("/getbyid/{id}")
-	public RecruiterDetails getRecruiterById(@PathVariable long l);
+	public RecruiterDetails getRecruiterById(@PathVariable long id);
 	
 }
