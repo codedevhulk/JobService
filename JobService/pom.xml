@@ -13,7 +13,7 @@
 	<groupId>com.JobService</groupId>
 	<artifactId>JobService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>JobService</name>
+	<name>JobService</name>	
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>

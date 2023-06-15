@@ -2,5 +2,5 @@
 spring:
   cloud:
     config:
-      uri: http://CONFIG-SERVER
+      uri: http://CONFIGSERVER
     
