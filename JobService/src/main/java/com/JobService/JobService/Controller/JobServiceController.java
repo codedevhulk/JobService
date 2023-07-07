@@ -30,157 +30,129 @@ import com.JobService.JobService.response.JobPostResponse;
 @CrossOrigin
 @RequestMapping("/jobservice")
 public class JobServiceController {
-	
-	
-	
+
 	@Autowired
 	JobService jobService;
-	
+
 	@Autowired
 	EmailSender emailSender;
-	
-	
-	
+
 	// Post a job
-	
+
 	@PostMapping("/recruiter/jobpost")
-	public ResponseEntity<JobPostResponse> jobPost(@RequestBody JobDetailsRequest jobDetailsRequest){
-		
-		int jobId=jobService.jobPost(jobDetailsRequest);
-		
-		JobPostResponse jobPostResponse=new JobPostResponse();
-		
-		jobPostResponse.setJobId(jobId);
+	public ResponseEntity<JobPostResponse> jobPost(@RequestBody JobDetailsRequest jobDetailsRequest) {
+		JobDetails jobDetails = jobService.jobPost(jobDetailsRequest);
+
+		JobPostResponse jobPostResponse = new JobPostResponse();
+
+		jobPostResponse.setJobId(jobDetails.getId());
 		jobPostResponse.setJobPostResponse("Job has been posted succesfully");
-		
-		return new ResponseEntity<>(jobPostResponse,HttpStatus.OK);
+
+		return new ResponseEntity<>(jobPostResponse, HttpStatus.OK);
 	}
-	
-	
-	
+
 	// To get a specific Job
-	
+
 	@GetMapping("/job/{id}")
-	public ResponseEntity<JobDetails> getJobById(@PathVariable int id){
-		
-		
-		
-		
-		JobDetails jobDetails=jobService.getJobById(id);
-		return new ResponseEntity<>(jobDetails,HttpStatus.OK);
-		
+	public ResponseEntity<JobDetails> getJobById(@PathVariable int id) {
+
+		JobDetails jobDetails = jobService.getJobById(id);
+		return new ResponseEntity<>(jobDetails, HttpStatus.OK);
+
 	}
-	
-	
-	
+
 	// View All Jobs
-	
+
 	@GetMapping("/alljobs")
-	public List<JobDetails> allJobs(){
-		
-		List<JobDetails> jobDetails=jobService.allJobs();
+	public List<JobDetails> allJobs() {
+
+		List<JobDetails> jobDetails = jobService.allJobs();
 		return jobDetails;
-		
+
 	}
-	
-	//  Update a job
-	
+
+	// Update a job
+
 	@PutMapping("/recruiter/updatejobpost/{id}")
-	public ResponseEntity<String> updateJobPost(@PathVariable("id") int id,@RequestBody JobDetailsRequest updatedJobDetailsRequest){
-		
-		jobService.updateJobPost(id,updatedJobDetailsRequest);
-		
-		return new ResponseEntity<>("Job details have been updated succesfully",HttpStatus.OK);
-		
-		
-		
+	public ResponseEntity<String> updateJobPost(@PathVariable("id") int id,
+			@RequestBody JobDetailsRequest updatedJobDetailsRequest) {
+
+		jobService.updateJobPost(id, updatedJobDetailsRequest);
+
+		return new ResponseEntity<>("Job details have been updated succesfully", HttpStatus.OK);
+
 	}
-	
+
 	// Delete a Job
-	
+
 	@DeleteMapping("/recruiter/deletejobpost/{id}")
-	public ResponseEntity<String> deleteJobPost(@PathVariable("id") int id){
-		
+	public ResponseEntity<String> deleteJobPost(@PathVariable("id") int id) {
+
 		jobService.deleteJobPost(id);
-		return new ResponseEntity<>("Job details with Job ID:"+id+"Has been deleted succesfully",HttpStatus.OK);
-		
+		return new ResponseEntity<>("Job details with Job ID:" + id + "Has been deleted succesfully", HttpStatus.OK);
+
 	}
-	
-	
-	
 
 	// Apply for a job
 	@PostMapping("/jobseeker/apply/")
-	public ResponseEntity<JobApplication> apply(@RequestBody JobApplicationRequest jobApplicationRequest){
-		JobApplication jobApplication=jobService.apply(jobApplicationRequest);
-		
-		return new ResponseEntity<>(jobApplication,HttpStatus.OK);
+	public ResponseEntity<JobApplication> apply(@RequestBody JobApplicationRequest jobApplicationRequest) {
+		JobApplication jobApplication = jobService.apply(jobApplicationRequest);
+
+		return new ResponseEntity<>(jobApplication, HttpStatus.OK);
 	}
-	
-	
-	
+
 	// To Get all the applications of all the applicants for all the jobs
-	
+
 	@GetMapping("/applications")
-	public List<JobApplication> getAllApplications(){
+	public List<JobApplication> getAllApplications() {
 		return jobService.getAllApplications();
 	}
-	
-	
-	
+
 	// To get all the applications who applied for the jobs posted a recruiter
 	@GetMapping("/recruiter/applications/{id}")
-	public List<JobApplication> getJobApplicationsPostedByRecruiter(@PathVariable long id){
+	public List<JobApplication> getJobApplicationsPostedByRecruiter(@PathVariable long id) {
 		return jobService.getJobApplicationsByRecruiter(id);
 	}
-	
-	
-	
-	
+
 	// To get the past applications of a Jobseeker
-	
+
 	@GetMapping("/jobseeker/applications/{id}")
-	public List<JobApplication> getJobApplicationsOfJobSeeker(@PathVariable int id){
+	public List<JobApplication> getJobApplicationsOfJobSeeker(@PathVariable int id) {
 		return jobService.getJobApplicationsOfJobSeeker(id);
 	}
-	
-	
-	// To Accept the application 
-	
+
+	// To Accept the application
+
 	@PutMapping("/recruiter/application/accept/{id}")
-	public ApplicationStatus acceptApplicationByApplicationId(@PathVariable int id){
-	jobService.acceptApplicationByApplicationId(id);
-	ApplicationStatus status=new ApplicationStatus();
-	status.setMessage("Job application has been Accepted for Application ID: "+id);
-	return status;
-	
-	
+	public ApplicationStatus acceptApplicationByApplicationId(@PathVariable int id) {
+		jobService.acceptApplicationByApplicationId(id);
+		ApplicationStatus status = new ApplicationStatus();
+		status.setMessage("Job application has been Accepted for Application ID: " + id);
+		return status;
+
 	}
-	
-	
+
 	// To delete the application by application id
-	
+
 	@DeleteMapping("/deleteapplication/{id}")
 	public ApplicationStatus deleteApplicationById(@PathVariable int id) {
-		
+
 		jobService.deleteApplicationById(id);
-		ApplicationStatus status=new ApplicationStatus();
-		status.setMessage("Job application has been removed for Application ID: "+id);
+		ApplicationStatus status = new ApplicationStatus();
+		status.setMessage("Job application has been removed for Application ID: " + id);
 		return status;
-	
+
 	}
-	
-	
+
 	// To Reject the application
-	
+
 	@PutMapping("/recruiter/application/reject/{id}")
-	public ResponseEntity<ApplicationStatus> rejectApplicationByApplicationId(@PathVariable int id){
-	jobService.rejectApplicationByApplicationId(id);
-	
-	ApplicationStatus status=new ApplicationStatus();
-	status.setMessage("Job application has been rejected for Application ID: "+id);
-	return new ResponseEntity<>(status,HttpStatus.OK);
+	public ResponseEntity<ApplicationStatus> rejectApplicationByApplicationId(@PathVariable int id) {
+		jobService.rejectApplicationByApplicationId(id);
+
+		ApplicationStatus status = new ApplicationStatus();
+		status.setMessage("Job application has been rejected for Application ID: " + id);
+		return new ResponseEntity<>(status, HttpStatus.OK);
 	}
-	
 
 }
