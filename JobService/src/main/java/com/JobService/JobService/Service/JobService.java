@@ -173,6 +173,7 @@ public class JobService {
 		jobDetailsRepo.deleteById(id);
 return "Job details have been removed with ID "+id;
 	}
+	
 
 	public JobApplication apply(JobApplicationRequest jobApplicationRequest) {
 		// TODO Auto-generated method stub
@@ -185,12 +186,11 @@ return "Job details have been removed with ID "+id;
 //			
 //		}
 
-		// JobSeekerDetails
-		// jobSeekerDetails=restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
+		 JobSeekerDetails jobSeekerDetails=restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+jobApplicationRequest.getJobSeekerId(),JobSeekerDetails.class);
 
 		log.info("Fetching jobseeker details");
-		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails = jobSeekerService
-				.getJobSeekerById(jobApplicationRequest.getJobSeekerId());
+//		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails = jobSeekerService
+//				.getJobSeekerById(jobApplicationRequest.getJobSeekerId());
 		log.info("Fetching Job details");
 		JobDetails jobDetails = jobDetailsRepo.findById(jobApplicationRequest.getJobId()).orElseThrow(
 				() -> new CustomException("Job details with ID " + jobApplicationRequest.getJobId() + " Not found",
@@ -304,12 +304,12 @@ return "Job details have been removed with ID "+id;
 
 	}
 
-	public List<JobApplication> getJobApplicationsOfJobSeeker(int id) {
+	public List<JobApplication> getJobApplicationsOfJobSeeker(long id) {
 		// TODO Auto-generated method stub
 
 		log.info("Getting the job seeker details");
-
-		com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails = jobSeekerService.getJobSeekerById(id);
+		 JobSeekerDetails jobSeekerDetails=restTemplate.getForObject("http://JOBSEEKERSERVICE/jobseeker/getbyid/"+id,JobSeekerDetails.class);
+		//com.JobService.JobService.external.JobSeekerDetails jobSeekerDetails = jobSeekerService.getJobSeekerById(id);
 
 		log.info("Getting the job applications of a job seeker");
 
@@ -363,6 +363,15 @@ return "Job details have been removed with ID "+id;
 				() -> new CustomException("Job application with ID: " + id + " Not found", "NOT_FOUND", 404));
 		log.info("Deleting the job application");
 		jobApplicationRepo.deleteById(id);
+	}
+
+	public List<JobDetails> getJobsOfRecruiter(int id) {
+		// TODO Auto-generated method stub
+		
+		List<JobDetails> jobDetails=jobDetailsRepo.findAll();
+		
+		
+		return jobDetails;
 	}
 
 }

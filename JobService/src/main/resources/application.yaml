@@ -2,6 +2,10 @@
 spring:
   config:
     import: configserver:http://localhost:7674
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:7674/
     
   zipkin:
     base-url: http://127.0.0.1:9411/

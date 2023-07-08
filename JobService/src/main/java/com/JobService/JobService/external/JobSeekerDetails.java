@@ -22,7 +22,7 @@ public class JobSeekerDetails {
 	
 	
 	
-	@Id
+	
 	//@GeneratedValue(strategy=GenerationType.AUTO)
 	long jobSeekerId;
 	String firstName;

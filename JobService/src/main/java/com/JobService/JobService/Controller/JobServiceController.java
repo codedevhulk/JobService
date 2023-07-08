@@ -94,6 +94,7 @@ public class JobServiceController {
 	}
 
 	// Apply for a job
+	
 	@PostMapping("/jobseeker/apply/")
 	public ResponseEntity<JobApplication> apply(@RequestBody JobApplicationRequest jobApplicationRequest) {
 		JobApplication jobApplication = jobService.apply(jobApplicationRequest);
@@ -117,7 +118,7 @@ public class JobServiceController {
 	// To get the past applications of a Jobseeker
 
 	@GetMapping("/jobseeker/applications/{id}")
-	public List<JobApplication> getJobApplicationsOfJobSeeker(@PathVariable int id) {
+	public List<JobApplication> getJobApplicationsOfJobSeeker(@PathVariable long id) {
 		return jobService.getJobApplicationsOfJobSeeker(id);
 	}
 
@@ -131,6 +132,17 @@ public class JobServiceController {
 		return status;
 
 	}
+	
+	
+	
+	@GetMapping("/recruiter/jobs/{id}")
+	public List<JobDetails> getJobsOfRecruiter(@PathVariable int id){
+		
+		List<JobDetails> jobsOfRecruiter=jobService.getJobsOfRecruiter(id);
+		return jobsOfRecruiter;
+	}
+	
+	
 
 	// To delete the application by application id
 
